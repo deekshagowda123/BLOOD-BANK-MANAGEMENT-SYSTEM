@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blood Bank - Login & Registration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 450px;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .card-header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .card-header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .card-body {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 13px;
+    }
+
+    .remember-forgot input[type="checkbox"] {
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .remember-forgot a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .remember-forgot a:hover {
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      color: #999;
+      font-size: 13px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      display: inline-block;
+      width: 40%;
+      height: 1px;
+      background: #ddd;
+      vertical-align: middle;
+    }
+
+    .divider::before {
+      margin-right: 10px;
+    }
+
+    .divider::after {
+      margin-left: 10px;
+    }
+
+    .toggle-text {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .toggle-text a {
+      color: #667eea;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toggle-text a:hover {
+      text-decoration: underline;
+    }
+
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .alert {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .password-toggle {
+      position: relative;
+    }
+
+    .password-toggle input {
+      padding-right: 40px;
+    }
+
+    .password-toggle .eye-icon {
+      position: absolute;
+      right: 12px;
+      top: 38px;
+      cursor: pointer;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #667eea;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .auth-container {
+        max-width: 100%;
+      }
+
+      .card-body {
+        padding: 30px 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="card">
+      <div class="card-header">
+        <h1>🩸 Blood Bank</h1>
+        <p>Blood Management System</p>
+      </div>
+
+      <div class="card-body">
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm" class="form-section active">
+          <h3 style="margin-bottom: 25px; color: #333;">Sign In</h3>
+
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label>Email or Username</label>
+              <input
+                type="text"
+                id="loginUsername"
+                placeholder="Enter your email or username"
+                required
+              />
+            </div>
+
+            <div class="form-group password-toggle">
+              <label>Password</label>
+              <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter your password"
+                required
+              />
+              <span class="eye-icon" onclick="togglePassword('loginPassword')">👁️</span>
+            </div>
+
+            <div class="remember-forgot">
+              <label>
+                <input type="checkbox" id="rememberMe" />
+                Remember me
+              </label>
+              <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign In</button>
+            <div class="loading" id="loginLoading">
+              <div class="spinner"></div>
+              Logging in...
+            </div>
+          </form>
+
+          <div class="divider">or</div>
+
+          <div class="toggle-text">
+            Don't have an account?
+            <a onclick="toggleForms()">Create Account</a>
+          </div>
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <div id="registerForm" class="form-section">
+          <h3 style="margin-bottom: 25px; color: #333;">Create Account</h3>
+
+          <form onsubmit="handleRegister(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  id="regName"
+                  placeholder="Enter full name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  id="regUsername"
+                  placeholder="Choose username"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                id="regEmail"
+                placeholder="Enter email address"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input
+                  type="tel"
+                  id="regPhone"
+                  placeholder="Enter phone number"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <select id="regRole" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;" required>
+                  <option value="donor">Donor</option>
+                  <option value="hospital">Hospital</option>
+                  <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Organization (Optional)</label>
+              <input
+                type="text"
+                id="regOrganization"
+                placeholder="Enter organization name"
+              />
+            </div>
+
+            <div class="form-group password-toggle">
+              <label>Password</label>
+              <input
+                type="password"
+                id="regPassword"
+                placeholder="Create password (min 6 chars)"
+                minlength="6"
+                required
+              />
+              <span class="eye-icon" onclick="togglePassword('regPassword')">👁️</span>
+            </div>
+
+            <div class="form-group password-toggle">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                id="regConfirmPassword"
+                placeholder="Confirm password"
+                required
+              />
+              <span class="eye-icon" onclick="togglePassword('regConfirmPassword')">👁️</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            <div class="loading" id="registerLoading">
+              <div class="spinner"></div>
+              Creating account...
+            </div>
+          </form>
+
+          <div class="divider">or</div>
+
+          <div class="toggle-text">
+            Already have an account?
+            <a onclick="toggleForms()">Sign In</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:5000";
+    let currentUser = null;
+
+    // Toggle between login and register forms
+    function toggleForms() {
+      document.getElementById("loginForm").classList.toggle("active");
+      document.getElementById("registerForm").classList.toggle("active");
+      clearAlert();
+    }
+
+    // Show/hide password
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      if (field.type === "password") {
+        field.type = "text";
+      } else {
+        field.type = "password";
+      }
+    }
+
+    // Show alert message
+    function showAlert(message, type) {
+      const alert = document.getElementById("alert");
+      alert.textContent = message;
+      alert.className = `alert ${type} show`;
+      setTimeout(() => {
+        alert.classList.remove("show");
+      }, 4000);
+    }
+
+    function clearAlert() {
+      const alert = document.getElementById("alert");
+      alert.classList.remove("show");
+    }
+
+    // Handle login
+    async function handleLogin(e) {
+      e.preventDefault();
+
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+      const rememberMe = document.getElementById("rememberMe").checked;
+
+      document.getElementById("loginLoading").style.display = "block";
+
+      try {
+        const response = await fetch(`${API_URL}/users/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: username, // Can be email or username
+            password: password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          currentUser = data.user;
+
+          // Store user in localStorage
+          localStorage.setItem(
+            "bloodBankUser",
+            JSON.stringify({
+              id: data.user._id,
+              name: data.user.name,
+              email: data.user.email,
+              role: data.user.role,
+            })
+          );
+
+          if (rememberMe) {
+            localStorage.setItem("rememberMe", "true");
+          }
+
+          showAlert("Login successful! Redirecting...", "success");
+
+          // Redirect after 1 second
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1000);
+        } else {
+          showAlert(data.message || "Login failed! Check credentials.", "error");
+        }
+      } catch (err) {
+        showAlert("Error: " + err.message, "error");
+      } finally {
+        document.getElementById("loginLoading").style.display = "none";
+      }
+    }
+
+    // Handle registration
+    async function handleRegister(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("regName").value;
+      const username = document.getElementById("regUsername").value;
+      const email = document.getElementById("regEmail").value;
+      const phone = document.getElementById("regPhone").value;
+      const role = document.getElementById("regRole").value;
+      const organization = document.getElementById("regOrganization").value;
+      const password = document.getElementById("regPassword").value;
+      const confirmPassword = document.getElementById("regConfirmPassword").value;
+
+      // Validate passwords match
+      if (password !== confirmPassword) {
+        showAlert("Passwords do not match!", "error");
+        return;
+      }
+
+      document.getElementById("registerLoading").style.display = "block";
+
+      try {
+        const response = await fetch(`${API_URL}/users/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name,
+            username: username,
+            email: email,
+            password: password,
+            phone: phone,
+            role: role,
+            organization: organization,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert("Account created successfully! Redirecting...", "success");
+
+          // Auto-login after registration
+          localStorage.setItem(
+            "bloodBankUser",
+            JSON.stringify({
+              id: data.user._id,
+              name: data.user.name,
+              email: data.user.email,
+              role: data.user.role,
+            })
+          );
+
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1500);
+        } else {
+          showAlert(
+            data.message || "Registration failed! Try again.",
+            "error"
+          );
+        }
+      } catch (err) {
+        showAlert("Error: " + err.message, "error");
+      } finally {
+        document.getElementById("registerLoading").style.display = "none";
+      }
+    }
+
+    // Check if user is already logged in
+    function checkLoginStatus() {
+      const user = localStorage.getItem("bloodBankUser");
+      if (user) {
+        // User already logged in, redirect to dashboard
+        window.location.href = "dashboard.html";
+      }
+    }
+
+    // Check on page load
+    window.addEventListener("load", checkLoginStatus);
+  </script>
+</body>
+</html>
